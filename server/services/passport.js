@@ -20,7 +20,7 @@ const localLogin = new LocalStrategy( localOptions, function(email, password, do
       if (err) { return done(err); }
       if (!isMatch) { return done(null, false); }
 
-      return done(null, true);
+      return done(null, user);
     });
   });
 });
