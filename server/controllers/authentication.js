@@ -6,6 +6,8 @@ exports.signup = function(req, res, next) {
   const email = req.body.email;
   const pass = req.body.password;
 
+  checkEmailAndPasswordExist();
+
   // Using async/await feature is cleaner but now it isn't available yet.
   // A workaround is use asyncawait library but then the code isn't clean.
   // (async (function findUser() {
@@ -30,6 +32,12 @@ exports.signup = function(req, res, next) {
   .catch(function(err){
     return next(err);
   });
+
+  function checkEmailAndPasswordExist () {
+    if (!email || !pass) {
+      return res.status(422).send({ error: 'You must provided an email and password' });
+    }
+  }
 
   function createAndStoreUser () {
     const user = new User({ email: email, password: pass });
