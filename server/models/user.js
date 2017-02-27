@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const bcript = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
+
+// DB Setup
+mongoose.Promise = global.Promise;
 
 // Define our model
 const userSchema = new Schema({
@@ -8,25 +11,27 @@ const userSchema = new Schema({
   password: String
 });
 
-// Encript password
-// 'Pre' means that before saving a model, run this function.
+// Before saving a model, run this function.
 userSchema.pre('save', function(next){
   const user = this; // user model
+  encryptPass(user, next);
+});
 
+function encryptPass(user, next) {
   // Generate a salt
-  bcript.genSalt(10, function(err, salt) {
-    if (err) { return next(err); }
-
+  bcrypt.genSalt(10)
+  .then( (salt) => {
     // Hash our password using the salt
-    bcript.hash(user.password, salt, null, function(err, hash) {
-      if(err) { return next(err); }
-
-      // Override plain password with the encripted one.
+    return bcrypt.hash(user.password, salt, null);
+  })
+  .then( (hash) => {
       user.password = hash;
       next();
-    });
   })
-});
+  .catch((err) => {
+    return next(err);
+  });
+}
 
 // Create the model class
 const ModelClass = mongoose.model('user', userSchema);
