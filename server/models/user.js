@@ -28,16 +28,19 @@ function encryptPass(user, next) {
       user.password = hash;
       next();
   })
-  .catch((err) => {
+  .catch( (err) => {
     return next(err);
   });
 }
 
+// Compare a password with the stored hash
 userSchema.methods.comparePassword = function(candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
-    if (err) { return callback(err); }
-
+  bcrypt.compare(candidatePassword, this.password)
+  .then( (isMatch) => {
     callback(null, isMatch);
+  })
+  .catch( (err) => {
+    return callback(err);
   });
 }
 
