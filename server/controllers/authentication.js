@@ -1,6 +1,8 @@
 //const async = require('asyncawait/async');
 //const await = require('asyncawait/await');
+const jwt = require('jwt-simple');
 const User = require('../models/user');
+const config = require('../config');
 
 exports.signup = function(req, res, next) {
   const email = req.body.email;
@@ -45,7 +47,12 @@ exports.signup = function(req, res, next) {
     user.save(function(err) {
       if (err) { return next(err); }
       // Respond to request indicating the user was created
-      res.json({ success: true });
+      res.json({ success: tokenForUser(user) });
     });
   }
+}
+
+function tokenForUser(user) {
+  timestamp = new Date().getTime();
+  return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
