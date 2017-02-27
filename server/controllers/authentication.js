@@ -31,18 +31,21 @@ exports.signup = function(req, res, next) {
 
   // See if a user with a given email exists
   User.findOne({ email: email })
-  .then(function(existingUser) {
+  .then( (existingUser) => {
 
     // If a user with email does exist, return a error
     if (existingUser) {
       // 422 Unprocessable Entity
-      return res.status(422).send({ error: 'Email is in use' });
+      res.status(422).send({ error: 'Email is in use' });
     }
     // If an user with email doesn't exist, create and save user record
-    createAndStoreUser()
-
+    return createAndStoreUser();
   })
-  .catch(function(err){
+  .then( (user) => {
+    // Respond to request indicating the user was created
+    res.json({ success: tokenForUser(user) });
+  })
+  .catch( (err) => {
     return next(err);
   });
 
@@ -54,11 +57,6 @@ exports.signup = function(req, res, next) {
 
   function createAndStoreUser () {
     const user = new User({ email: email, password: pass });
-
-    user.save(function(err) {
-      if (err) { return next(err); }
-      // Respond to request indicating the user was created
-      res.json({ success: tokenForUser(user) });
-    });
+    return user.save();
   }
 }
