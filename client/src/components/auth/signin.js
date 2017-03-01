@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
+import * as actions from '../../actions';
 
 class Signin extends Component {
   onSubmit({ email, password }) {
     console.log(email, password);
     // Log user in
+    this.props.signinUser({ email, password });
   }
 
   render() {
@@ -27,6 +30,8 @@ class Signin extends Component {
 }
 
 // Decorate the form component
-export default reduxForm({
-  form: 'signin'
-})(Signin);
+Signin = reduxForm({ form: 'signin' })(Signin);
+
+// Babel fails when transpile variables using '* as ... from'
+// Remove the property __esModule from actions
+export default connect(null, Object.assign({}, actions))(Signin);
