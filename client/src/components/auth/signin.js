@@ -5,9 +5,18 @@ import * as actions from '../../actions';
 
 class Signin extends Component {
   onSubmit({ email, password }) {
-    console.log(email, password);
     // Log user in
     this.props.signinUser({ email, password });
+  }
+
+  renderAlert() {
+    if (this.props.errorMessage) {
+      return (
+        <div className="alert alert-danger">
+           <strong>Oops!</strong> {this.props.errorMessage}
+        </div>
+      )
+    }
   }
 
   render() {
@@ -21,8 +30,9 @@ class Signin extends Component {
         </fieldset>
         <fieldset className="form-group">
           <label>Password:</label>
-          <Field className="form-control" name="password" component="input" type="text" />
+          <Field className="form-control" name="password" component="input" type="password" />
         </fieldset>
+        {this.renderAlert()}
         <button className="btn btn-primary" action="submit">Sign in</button>
       </form>
     );
@@ -32,6 +42,10 @@ class Signin extends Component {
 // Decorate the form component
 Signin = reduxForm({ form: 'signin' })(Signin);
 
+function mapStateToProps(state) {
+  return { errorMessage: state.auth.error };
+}
+
 // Babel fails when transpile variables using '* as ... from'
 // Remove the property __esModule from actions
-export default connect(null, Object.assign({}, actions))(Signin);
+export default connect(mapStateToProps, Object.assign({}, actions))(Signin);
