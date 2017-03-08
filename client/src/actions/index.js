@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { browserHistory } from 'react-router';
-import { AUTH_USER, AUTH_ERROR } from './types';
+import { AUTH_USER, UNAUTH_USER, AUTH_ERROR } from './types';
 
 const API_URL = 'http://localhost:3000';
 
@@ -30,6 +30,11 @@ export function authError(error) {
     type: AUTH_ERROR,
     payload: error
   }
+}
+
+export function signoutUser() {
+  localStorage.removeItem('token');
+  return { type: UNAUTH_USER }
 }
 
 // Note: react-promise is not exactly what we want beacause of
