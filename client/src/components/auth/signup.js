@@ -9,6 +9,16 @@ class Signup extends Component {
     this.props.signupUser(formProps);
   }
 
+  renderAlert() {
+    if (this.props.errorMessage) {
+      return (
+        <div className="alert alert-danger">
+           <strong>Oops!</strong> {this.props.errorMessage}
+        </div>
+      )
+    }
+  }
+
   renderField = ({ input, label, type, meta: { touched, error } }) => (
       <fieldset className="form-group">
         <label>{label}</label>
@@ -25,6 +35,7 @@ class Signup extends Component {
         <Field name="email" type="text" label="Email:" component={this.renderField} />
         <Field name="password" type="password" label="Password:" component={this.renderField} />
         <Field name="confirmpassword" type="password" label="Confirm Password:" component={this.renderField} />
+        {this.renderAlert()}
         <button className="btn btn-primary" action="submit">Sign up</button>
       </form>
     );
@@ -59,6 +70,10 @@ Signup = reduxForm({
   validate
  })(Signup);
 
+ function mapStateToProps(state) {
+   return { errorMessage: state.auth.error };
+ }
+
 // Babel fails when transpile variables using '* as ... from'
 // Remove the property __esModule from actions
-export default connect(null, Object.assign({}, actions))(Signup);
+export default connect(mapStateToProps, Object.assign({}, actions))(Signup);
