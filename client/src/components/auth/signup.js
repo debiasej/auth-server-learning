@@ -4,6 +4,10 @@ import { reduxForm, Field } from 'redux-form';
 import * as actions from '../../actions';
 
 class Signup extends Component {
+  handleFormSubmit(formProps) {
+    // Call action creator to sign up the user
+    this.props.signupUser(formProps);
+  }
 
   renderField = ({ input, label, type, meta: { touched, error } }) => (
       <fieldset className="form-group">
@@ -17,7 +21,7 @@ class Signup extends Component {
     const { handleSubmit } = this.props;
 
     return(
-      <form>
+      <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
         <Field name="email" type="text" label="Email:" component={this.renderField} />
         <Field name="password" type="password" label="Password:" component={this.renderField} />
         <Field name="confirmpassword" type="password" label="Confirm Password:" component={this.renderField} />
