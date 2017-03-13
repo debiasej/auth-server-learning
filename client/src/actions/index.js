@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { browserHistory } from 'react-router';
-import { AUTH_USER, UNAUTH_USER, AUTH_ERROR } from './types';
+import { AUTH_USER, UNAUTH_USER, AUTH_ERROR, FETCH_MESSAGE } from './types';
 
 const API_URL = 'http://localhost:3000';
 
@@ -47,6 +47,32 @@ export function authError(error) {
 export function signoutUser() {
   localStorage.removeItem('token');
   return { type: UNAUTH_USER }
+}
+
+export function fetchMessage() {
+  return function(dispatch) {
+    axios.get(API_URL, {
+      headers: { authorization: localStorage.getItem('token') }
+    })
+    .then(response => {
+      dispatch({
+        type: FETCH_MESSAGE,
+        payload: response.data.message
+      })
+    })
+  }
+}
+
+// Another possible action creator to fetch a message but using Redux-thunk
+export function fetchMessageWithReduxPromise() {
+  const request = axios.get(API_URL, {
+    headers: { authorization: localStorage.getItem('token') }
+  });
+
+  return {
+    type: FETCH_MESSAGE,
+    payload: request
+  }
 }
 
 // Note: react-promise is not exactly what we want beacause of
