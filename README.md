@@ -12,7 +12,7 @@ This project has been developed to practice my skills with the tech stack shown 
 Checkout this repository, install dependencies, then start Webpack server with the following:
 
 ```
-	git clone git clone https://github.com/debiasej/auth-server-learning.git
+	git clone https://github.com/debiasej/auth-server-learning.git
 	cd auth-server-learning
 	npm install
 	npm start
